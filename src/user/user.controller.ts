@@ -5,11 +5,21 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
+  }
+
+  @Post('login')
+  async Login(@Body() createUserDto: CreateUserDto) {
+    const user = await this.userService.findByEmail(createUserDto.email);
+    if (user) {
+      return { message: 'User already exists' };
+    }
+    // Check if the user exists in the database
+    return this.userService.login(createUserDto);
   }
 
   @Get()
